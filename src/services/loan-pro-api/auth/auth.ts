@@ -12,7 +12,7 @@ export const authApi = loanProApi.injectEndpoints({
         url: 'auth/login',
         method: 'POST',
         body,
-        credentials: 'same-origin'
+        credentials: 'include'
       }),
       invalidatesTags: ['Login'],
       transformErrorResponse: (
