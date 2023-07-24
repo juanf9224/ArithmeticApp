@@ -45,7 +45,7 @@ const RecordsPage = () => {
         return () => {
             dispatch(resetRecords());
         }
-    }, [data]);
+    }, [data, dispatch, isFetching]);
 
     const handlePaginationChange = (meta: any) => {
         setMeta(meta);

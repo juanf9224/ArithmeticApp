@@ -1,5 +1,5 @@
 import { TableCell, Grid, Paper, TableContainer, Table, TableBody, TablePagination, TableRow, LinearProgress} from "@mui/material";
-import { FunctionComponent, useState, ChangeEvent, ReactElement, memo, useCallback, Suspense, useMemo } from "react";
+import { FunctionComponent, ChangeEvent, memo, Suspense, useMemo } from "react";
 import { EnhancedTableHead } from "../EnhancedTableHead/EnhancedTableHead";
 import { IDynamicTableProp, Sort } from "./dynamicTable.types";
 import DynamicTableSkeleton from "../DynamicTableSkeleton/DynamicTableSkeleton";
@@ -46,7 +46,7 @@ const DynamicTable: FunctionComponent<IDynamicTableProp> = ({
                 );
             })}
         </TableRow>
-    )), [data]);
+    )), [data, headers]);
 
     const labelPages = () => `Displaying ${meta.rowsDisplayedLabel || 'items'} of a total ${meta.total} pages`;
 

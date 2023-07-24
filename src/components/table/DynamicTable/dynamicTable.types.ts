@@ -1,5 +1,4 @@
 import { TableCellProps } from "@mui/material";
-import { IRecord } from "constants/record.constant";
 
 export enum Sort {
     ASC = 'asc',
