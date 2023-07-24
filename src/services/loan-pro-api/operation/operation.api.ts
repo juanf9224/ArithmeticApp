@@ -23,6 +23,7 @@ const operationsApi = loanProApi.injectEndpoints({
                 data: data
             }),
             credentials: 'same-origin',
+            mode: 'cors'
           };
         },
         transformErrorResponse: (
@@ -38,6 +39,7 @@ const operationsApi = loanProApi.injectEndpoints({
           return {
             url: `/operations`,
             credentials: 'same-origin',
+            mode: 'cors'
           };
         },
         providesTags: ['Operations'],

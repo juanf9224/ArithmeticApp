@@ -1,17 +1,17 @@
-import React, { Suspense, lazy, useEffect, useState } from 'react'
+import React, { Suspense, lazy, useContext, useEffect, useState } from 'react'
 import { Grid, LinearProgress } from '@mui/material';
 import OperationModal from 'components/OperationModal/OperationModal';
 import { SearchInput } from 'components/common/Search/SearchInput';
 import LoanProButton from 'components/common/LoanProButton/LoanProButton';
 import { recordHeaders } from 'constants/record.constant';
 import { useGetRecordsQuery } from 'services/loan-pro-api/record/record.api';
-import { useDispatch, useSelector } from 'react-redux';
-import { IAppState } from 'store/types';
+import { useDispatch } from 'react-redux';
 import { Sort } from 'components/table/DynamicTable/dynamicTable.types';
 import { addRecords, resetRecords } from 'store/features/record/recordSlice';
 import { useCalculateMutation } from 'services/loan-pro-api/operation/operation.api';
 import { OperationType } from 'constants/operation.constant';
 import { useDebounce } from 'hooks/useDebounce';
+import { AuthContext } from 'context/authContext';
 
 const DynamicTable = lazy(() => import('components/table/DynamicTable/DynamicTable'));
 
@@ -25,7 +25,7 @@ const RecordsPage = () => {
         orderBy: 'id',
         sortBy: Sort.DESC,
     })
-    const user = useSelector((state: IAppState) => state.user);
+    const { user } = useContext(AuthContext);
     const dispatch = useDispatch()
     const { data, isFetching, refetch } = useGetRecordsQuery({
         userId: user.id,

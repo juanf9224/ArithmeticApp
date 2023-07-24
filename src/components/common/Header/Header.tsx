@@ -1,26 +1,18 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { Grid, IconButton, ListItemText, Menu, MenuItem, Typography } from '@mui/material';
 import { trueNorthAndLoan } from 'assets';
-import { useDispatch, useSelector } from 'react-redux';
-import { logOut } from 'store/features/user/userSlice';
-import { IAppState } from 'store/types';
 import MenuIcon from '@mui/icons-material/Menu';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import { useNavigate } from 'react-router-dom';
-import { resetRecords } from 'store/features/record/recordSlice';
-import { resetOperations } from 'store/features/operation/operationSlice';
+import { AuthContext } from 'context/authContext';
 
 const Header = () => {
-    const user = useSelector((state: IAppState) => state.user)
+    const { user, doLogout } = useContext(AuthContext);
     const [anchorMenu, setAnchorMenu] = useState(null);
-    const dispatch = useDispatch();
     const navigate = useNavigate();
 
-    const handleLogOut = () => {
-        dispatch(resetRecords());
-        dispatch(resetOperations());
-        localStorage.removeItem('isAuthenticated');
-        dispatch(logOut());
+    const handleLogOut = async () => {
+        await doLogout();
         navigate('/login', { replace: true });
     }
 

@@ -9,6 +9,7 @@ const recordApi = loanProApi.injectEndpoints({
           return {
             url: `records/${args.userId}?page=${args?.meta?.page}&itemsPerPage=${args?.meta?.itemsPerPage}&orderBy=${args?.meta?.orderBy}&sortBy=${args?.meta?.sortBy}&search=${args?.search}`,
             credentials: 'same-origin',
+            mode: 'cors'
           };
         },
         providesTags: ['Records'],

@@ -1,31 +1,25 @@
-import React, { FC, useState } from 'react';
+import React, { FC, useContext, useState } from 'react';
 import { Button, CircularProgress, FormControl, InputAdornment, TextField, Tooltip, Typography } from '@mui/material';
 import { useForm } from 'react-hook-form';
-import { useDispatch } from 'react-redux';
-import { addUser } from 'store/features/user/userSlice';
 import { emailPatternValidator, emailValidationErrorText, emailValidator } from 'utils/formValidator';
 import { loanPro } from 'assets';
 import { Clear, Lock, Mail, Visibility, VisibilityOff } from '@mui/icons-material';
-import { useLoginMutation } from 'services/loan-pro-api/auth/auth';
 import { useNavigate } from 'react-router-dom';
 import CentralizedContainer from 'components/common/CentralizedContainer/CentralizedContainer';
 import { makeStyles } from '@mui/styles';
+import { ILoginFields } from 'constants/user.constant';
+import { AuthContext } from 'context/authContext';
+import { IExtendedTheme } from 'theme/ExtendedThemeOptions';
 
-export interface ILoginFields {
-  username: string;
-  password: string;
-};
-
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles((theme: IExtendedTheme) => ({
   form: {
       display: 'flex',
       rowGap: 25
   }
   ,
   loginBtn: {
-      background: 'black',
-      color: 'white',
-      height: 50
+      height: 50,
+      cursor: 'pointer',
   },
   imageContainer: {
     display: 'flex',
@@ -34,6 +28,7 @@ const useStyles = makeStyles(() => ({
   }
 }))
 const Login: FC = () => {
+  const { login: { doLogin, isLoading } } = useContext(AuthContext);
   const { loginBtn, form, imageContainer } = useStyles();
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const { handleSubmit, setValue, register, formState: { errors }, watch } = useForm<ILoginFields>({
@@ -41,15 +36,11 @@ const Login: FC = () => {
   });
   const watchUsername = watch('username', '');
   const watchPassword = watch('password', '');
-  const dispatch = useDispatch();
-  const [login, { isLoading }] = useLoginMutation();
   const navigate = useNavigate();
 
   const handleLogIn = async (formData: ILoginFields) => {
     try {
-      const response = await login(formData).unwrap();
-      dispatch(addUser(response));
-      localStorage.setItem('isAuthenticated', 'true');
+      await doLogin(formData);
       navigate('/operation/records', { replace: true });
     } catch (error: any) {
       console.error(
@@ -136,9 +127,11 @@ const Login: FC = () => {
                     <Typography style={{ color: 'red' }} variant="body2"> {errors.password.message} </Typography>
                   ) : null}
             <Button
+              color="primary"
               fullWidth
               className={loginBtn}
               onClick={handleSubmit(handleLogIn)}
+              variant="contained"
             >
               { isLoading ? <CircularProgress /> : 'Login' }
             </Button>

@@ -1,9 +1,10 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createDraftSafeSelector, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import {
   initialUserState,
   IUser,
   IUserState,
 } from './types';
+import { IAppState } from 'store/types';
 
 export const usersSlice = createSlice({
   name: 'user',
@@ -29,5 +30,10 @@ export const {
   addUser,
   logOut,
 } = usersSlice.actions;
+
+export const selectUser = createDraftSafeSelector(
+  (state: IAppState) => state,
+  (state) => state.user
+);
 
 export default usersSlice.reducer;

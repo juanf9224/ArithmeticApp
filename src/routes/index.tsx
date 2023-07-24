@@ -1,11 +1,11 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import PrivateRoutes from './PrivateRoutes';
 import PublicRoutes from './PublicRoutes';
-import { useSelector } from 'react-redux';
 import { BrowserRouter } from 'react-router-dom';
+import { AuthContext } from 'context/authContext';
 
 const MainNavigator = () => {
-    const user = useSelector((state: any) => state.user);
+    const { user } = useContext(AuthContext);
     const isAuthenticated = localStorage.getItem('isAuthenticated');
     return (
         <BrowserRouter>

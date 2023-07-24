@@ -39,6 +39,7 @@ export const authApi = loanProApi.injectEndpoints({
         url: 'auth/refresh-token',
         method: 'POST',
         credentials: 'same-origin',
+        mode: 'cors'
       }),
       invalidatesTags: ['RefreshToken'],
       transformErrorResponse: (
