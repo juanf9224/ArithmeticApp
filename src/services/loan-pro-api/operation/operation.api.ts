@@ -22,7 +22,7 @@ const operationsApi = loanProApi.injectEndpoints({
                 type: type,
                 data: data
             }),
-            credentials: "include",
+            credentials: 'same-origin',
           };
         },
         transformErrorResponse: (
@@ -37,7 +37,7 @@ const operationsApi = loanProApi.injectEndpoints({
         query: (): FetchArgs => {
           return {
             url: `/operations`,
-            credentials: "include",
+            credentials: 'same-origin',
           };
         },
         providesTags: ['Operations'],

@@ -1,13 +1,14 @@
+import { FetchArgs } from "@reduxjs/toolkit/dist/query";
 import { loanProApi } from "..";
 import { IErrorResponse } from "../api.types";
 
 const recordApi = loanProApi.injectEndpoints({
     endpoints: build => ({
       getRecords: build.query({
-        query: args => {
+        query: (args): FetchArgs => {
           return {
             url: `records/${args.userId}?page=${args?.meta?.page}&itemsPerPage=${args?.meta?.itemsPerPage}&orderBy=${args?.meta?.orderBy}&sortBy=${args?.meta?.sortBy}&search=${args?.search}`,
-            withCredentials: true,
+            credentials: 'same-origin',
           };
         },
         providesTags: ['Records'],
