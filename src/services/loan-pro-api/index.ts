@@ -11,6 +11,7 @@ const baseQuery = fetchBaseQuery({
       headers.set('Content-Type', 'application/json');
       return headers;
     },
+    credentials: 'include',
   });
 const baseQueryWithReauth: BaseQueryFn<
   string | FetchArgs,

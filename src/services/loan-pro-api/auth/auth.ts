@@ -12,7 +12,6 @@ export const authApi = loanProApi.injectEndpoints({
         url: 'auth/login',
         method: 'POST',
         body,
-        credentials: 'same-origin'
       }),
       invalidatesTags: ['Login'],
       transformErrorResponse: (
@@ -25,7 +24,6 @@ export const authApi = loanProApi.injectEndpoints({
       query: (): FetchArgs => ({
         url: 'auth/logout',
         method: 'POST',
-        credentials: 'same-origin',
       }),
       invalidatesTags: ['Logout'],
       transformErrorResponse: (
@@ -37,9 +35,7 @@ export const authApi = loanProApi.injectEndpoints({
     refreshToken: build.mutation({
       query: (): FetchArgs => ({
         url: 'auth/refresh-token',
-        method: 'POST',
-        credentials: 'same-origin',
-        mode: 'cors'
+        method: 'POST'
       }),
       invalidatesTags: ['RefreshToken'],
       transformErrorResponse: (

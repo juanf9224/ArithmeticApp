@@ -7,8 +7,6 @@ const userApi = loanProApi.injectEndpoints({
       query: args => {
         return {
           url: `user/${args.userId}`,
-          credentials: 'same-origin',
-          mode: 'cors'
         };
       },
       transformResponse: (

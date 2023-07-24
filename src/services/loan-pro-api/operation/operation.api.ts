@@ -21,9 +21,7 @@ const operationsApi = loanProApi.injectEndpoints({
             body: JSON.stringify({
                 type: type,
                 data: data
-            }),
-            credentials: 'same-origin',
-            mode: 'cors'
+            })
           };
         },
         transformErrorResponse: (
@@ -37,9 +35,7 @@ const operationsApi = loanProApi.injectEndpoints({
       getOperations: build.query({
         query: (): FetchArgs => {
           return {
-            url: `/operations`,
-            credentials: 'same-origin',
-            mode: 'cors'
+            url: `/operations`
           };
         },
         providesTags: ['Operations'],

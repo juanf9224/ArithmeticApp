@@ -1,28 +1,11 @@
 import { ILoginFields } from "constants/user.constant";
-import { FC, PropsWithChildren, createContext, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { AuthContext } from "context/authContext";
+import { FC, PropsWithChildren, useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import { useLoginMutation, useLogoutMutation } from "services/loan-pro-api/auth/auth";
 import { resetOperations } from "store/features/operation/operationSlice";
 import { resetRecords } from "store/features/record/recordSlice";
-import { IUserState, initialUserState } from "store/features/user/types";
-import { addUser, logOut, selectUser } from "store/features/user/userSlice";
-
-type AuthContextType = {
-    user: IUserState,
-    login: {
-        doLogin: (formData: ILoginFields) => Promise<void>,
-        isLoading: boolean,
-    },
-    doLogout: () => Promise<void>
-}
-export const AuthContext = createContext<AuthContextType>({
-    user: initialUserState,
-    login: {
-        doLogin: (formData: ILoginFields) => Promise.resolve(),
-        isLoading: false,
-    },
-    doLogout: () => Promise.resolve()
-});
+import { selectUser, addUser, logOut } from "store/features/user/userSlice";
 
 export const AuthContextProvider: FC<PropsWithChildren> = ({ children }) => {
     const user = useSelector(selectUser);
