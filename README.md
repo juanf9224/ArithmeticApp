@@ -2,6 +2,14 @@
 
 LoanPro is an arithmetic calculator app that allows you to perform simple mathematical operations as well as generate random strings in a simple but intuitive ui
 
+# Stack
+
+- RTK Query to handle all api communications with the server
+- Redux toolkit slices to handle state management globally
+- React Hook Form to handle forms
+- Material UI for styling of the app
+- Jest for unit testing
+
 
 # How to install
 
