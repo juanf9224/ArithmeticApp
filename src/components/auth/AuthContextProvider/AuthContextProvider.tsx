@@ -18,6 +18,7 @@ export const AuthContextProvider: FC<PropsWithChildren> = ({ children }) => {
 
     useEffect(() => {
         if (!user?.id && Boolean(isAuthenticated)) {
+            console.log('refresh happened');
             doRefreshToken();
         }
     }, [])
