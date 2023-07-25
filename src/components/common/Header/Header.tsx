@@ -1,6 +1,6 @@
 import React, { useContext, useState } from 'react';
 import { Grid, IconButton, ListItemText, Menu, MenuItem, Typography } from '@mui/material';
-import { trueNorthAndLoan } from 'assets';
+import { loanPro } from 'assets';
 import MenuIcon from '@mui/icons-material/Menu';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import { useNavigate } from 'react-router-dom';
@@ -27,7 +27,7 @@ const Header = () => {
             borderBottom: '.5px solid gray',
             padding: '0 10px'
         }}>
-            <img src={trueNorthAndLoan} alt="loan-pro" style={{ width: '25%', maxHeight: '100%' }} />
+            <img src={loanPro} alt="loan-pro" style={{ width: '25%', maxHeight: '100%' }} />
             <IconButton onClick={handleOpenUserMenu} disableFocusRipple disableRipple>
                 <Typography variant="body1" sx={{ color: 'black' }}>{user?.username || 'MENU'}</Typography>
                 <MenuIcon sx={{ fontSize: 20, ml: 1 }} />

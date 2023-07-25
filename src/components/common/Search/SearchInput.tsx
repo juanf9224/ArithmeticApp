@@ -1,6 +1,6 @@
 import { Search } from "@mui/icons-material";
 import { Paper, InputBase, Divider, Button } from "@mui/material";
-import { FunctionComponent, useState, memo } from "react";
+import { FunctionComponent, useState, memo, ChangeEvent, KeyboardEvent } from "react";
 
 export type SearchInputProp = {
     searchHandler: (term: string) => void;
@@ -14,6 +14,10 @@ export const SearchInput: FunctionComponent<SearchInputProp> = ({ searchHandler,
         setSearchTerm(value);
         searchHandler(value);
     }
+
+    const preventEnterKeyRefresh = (ev: KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+        if (ev.key === 'Enter') ev.preventDefault();
+    };
     return (
         <Paper component="form" style={{
             display: 'flex',
@@ -31,6 +35,7 @@ export const SearchInput: FunctionComponent<SearchInputProp> = ({ searchHandler,
                 inputProps={{ 'aria-label': 'search customer' }}
                 value={searchTerm}
                 onChange={(e) => onInputChange(e.target.value)}
+                onKeyDown={preventEnterKeyRefresh}
             />
             <Divider
                 style={{

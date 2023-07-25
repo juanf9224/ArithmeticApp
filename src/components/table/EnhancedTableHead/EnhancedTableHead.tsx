@@ -26,7 +26,7 @@ export const EnhancedTableHead = ({
                         headCell?.sortDisabled ? headCell.label : (
                             <TableSortLabel
                                 active={meta.orderBy === headCell.id}
-                                direction={meta.sortBy === headCell.id ? meta.orderBy : Sort.ASC}
+                                direction={meta.orderBy === headCell.id ? meta.orderBy : Sort.ASC}
                                 onClick={() => sortHandler(headCell.id)}
                             >
 

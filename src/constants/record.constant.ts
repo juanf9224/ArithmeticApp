@@ -14,16 +14,17 @@ export const recordHeaders: IDynamicHeader[] = [
     {
         id: "operationResponse",
         label: "Operation Response",
+        width: 100,
+        sortDisabled: true,
+    },
+    {
+        id: "amount",
+        label: "Amount",
         width: 100
     },
     {
         id: "userBalance",
         label: "User balance",
-        width: 100
-    },
-    {
-        id: "amount",
-        label: "Amount",
         width: 100
     },
     {
@@ -40,6 +41,12 @@ export const recordHeaders: IDynamicHeader[] = [
         id: "operationId",
         label: "Operation ID",
         width: 100
+    },
+    {
+        id: 'delete',
+        label: 'Delete',
+        width: 50,
+        sortDisabled: true,
     },
     {
         id: "createdAt",

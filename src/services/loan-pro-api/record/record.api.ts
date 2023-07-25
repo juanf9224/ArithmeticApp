@@ -19,9 +19,24 @@ const recordApi = loanProApi.injectEndpoints({
           return (response as IErrorResponse)?.data?.errorMessage;
         },
       }),
+      removeRecord: build.mutation({
+        query: (args): FetchArgs => {
+          return {
+            url: `records/${args.id}`,
+            method: 'DELETE'
+          };
+        },
+        transformErrorResponse: (
+          response: { status: string | number; error?: any },
+          _meta,
+          _arg,
+        ) => {
+          return (response as IErrorResponse)?.data?.errorMessage;
+        },
+      }),
     }),
     overrideExisting: true,
   });
   
-  export const { useGetRecordsQuery } =
+  export const { useGetRecordsQuery, useRemoveRecordMutation } =
   recordApi;

@@ -1,8 +1,9 @@
-import { TableCell, Grid, Paper, TableContainer, Table, TableBody, TablePagination, TableRow, LinearProgress} from "@mui/material";
+import { TableCell, Grid, Paper, TableContainer, Table, TableBody, TablePagination, TableRow, LinearProgress, IconButton} from "@mui/material";
 import { FunctionComponent, ChangeEvent, memo, Suspense, useMemo } from "react";
 import { EnhancedTableHead } from "../EnhancedTableHead/EnhancedTableHead";
 import { IDynamicTableProp, Sort } from "./dynamicTable.types";
 import DynamicTableSkeleton from "../DynamicTableSkeleton/DynamicTableSkeleton";
+import DeleteIcon from '@mui/icons-material/Delete';
 
 const DynamicTable: FunctionComponent<IDynamicTableProp> = ({
     data = [],
@@ -11,6 +12,7 @@ const DynamicTable: FunctionComponent<IDynamicTableProp> = ({
     meta,
     isLoading = false,
     hasPagination,
+    handleRemove = () => ({})
 }) => {
 
     const sortHandler = (property: any) => {
@@ -28,9 +30,9 @@ const DynamicTable: FunctionComponent<IDynamicTableProp> = ({
         handlePaginationChange({ ...meta, itemsPerPage: parseInt(event.target.value, 10), page: 0 });
     };
 
-    const renderRows = useMemo(() => data.map((d: any, idx) => (
-        <TableRow key={`row-${idx}`}>
-            {Object.keys(d).map((property) => {
+    const withDeleteColumn = (d: any) => {
+        const columnsObject = { ...d, delete: '' };
+        return Object.keys(columnsObject).map((property) => {
                 const cellData = d[property];
                 const head = headers.find((h: any) => h.id === property);
                 return (
@@ -41,14 +43,27 @@ const DynamicTable: FunctionComponent<IDynamicTableProp> = ({
                         width={head?.width}
                         style={{ maxWidth: head?.width, display: head?.hidden ? 'none' : 'table-cell' }}
                     >
-                        {cellData}
+                        {
+                            property === 'delete' ? (
+                                <IconButton aria-label="delete" onClick={() => {
+                                    handleRemove(columnsObject.id)
+                                }}>
+                                    <DeleteIcon />
+                                </IconButton>
+                            ) : cellData
+                        }
                     </TableCell>
                 );
-            })}
+            })
+    }
+
+    const renderRows = useMemo(() => data.map((d: any, idx) => (
+        <TableRow key={`row-${idx}`}>
+            {withDeleteColumn(d)}
         </TableRow>
     )), [data, headers]);
 
-    const labelPages = () => `Displaying ${meta.rowsDisplayedLabel || 'items'} of a total ${meta.total} pages`;
+    const labelPages = () => `Displaying ${data.length} items of a total of ${meta.total}`;
 
 
     return (

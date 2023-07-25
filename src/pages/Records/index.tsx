@@ -4,7 +4,7 @@ import OperationModal from 'components/OperationModal/OperationModal';
 import { SearchInput } from 'components/common/Search/SearchInput';
 import LoanProButton from 'components/common/LoanProButton/LoanProButton';
 import { recordHeaders } from 'constants/record.constant';
-import { useGetRecordsQuery } from 'services/loan-pro-api/record/record.api';
+import { useGetRecordsQuery, useRemoveRecordMutation } from 'services/loan-pro-api/record/record.api';
 import { useDispatch } from 'react-redux';
 import { Sort } from 'components/table/DynamicTable/dynamicTable.types';
 import { addRecords, resetRecords } from 'store/features/record/recordSlice';
@@ -36,6 +36,7 @@ const RecordsPage = () => {
         skip: !user?.id
     });
     const [calculate, { isLoading }] = useCalculateMutation();
+    const [removeRecord] = useRemoveRecordMutation();
 
     useEffect(() => {
         if (!isFetching && data?.results?.length) {
@@ -70,6 +71,15 @@ const RecordsPage = () => {
         }
     }
 
+    const handleRemove = async (id: any) => {
+        try {
+            await removeRecord({ id }).unwrap();
+            await refetch();
+        } catch (error: any) {
+            console.error(`Error trying to delete record - message: ${error.message} - stack: ${error.stack}`);
+        }
+    }
+
     return (
         <Suspense fallback={<LinearProgress />}>
             <Grid container style={{
@@ -98,9 +108,10 @@ const RecordsPage = () => {
                         hasPagination
                         meta={{
                             ...meta,
-                            rowsDisplayedLabel: 'records',
+                            rowsDisplayedLabel: 'Items per page',
                             total: (data && data?.total) || 0
                         }}
+                        handleRemove={handleRemove}
                     />
                 ) : null
             }

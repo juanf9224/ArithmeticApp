@@ -21,6 +21,7 @@ export interface IDynamicTableProp {
     meta: IMeta;
     isLoading?: boolean;
     hasPagination?: boolean;
+    handleRemove?: (id: number) => void;
 }
 
 export interface IDynamicHeader extends TableCellProps {
