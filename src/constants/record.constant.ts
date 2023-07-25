@@ -32,13 +32,13 @@ export const recordHeaders: IDynamicHeader[] = [
         width: 100
     },
     {
-        id: "operationId",
-        label: "Operation ID",
+        id: "userId",
+        label: "User ID",
         width: 100
     },
     {
-        id: "userId",
-        label: "User ID",
+        id: "operationId",
+        label: "Operation ID",
         width: 100
     },
     {
