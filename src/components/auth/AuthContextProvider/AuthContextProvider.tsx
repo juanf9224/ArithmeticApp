@@ -2,7 +2,7 @@ import { ILoginFields } from "constants/user.constant";
 import { AuthContext } from "context/authContext";
 import { FC, PropsWithChildren, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { useLoginMutation, useLogoutMutation } from "services/loan-pro-api/auth/auth";
+import { useLoginMutation, useLogoutMutation, useRefreshTokenMutation } from "services/loan-pro-api/auth/auth";
 import { resetOperations } from "store/features/operation/operationSlice";
 import { resetRecords } from "store/features/record/recordSlice";
 import { selectUser, addUser, logOut } from "store/features/user/userSlice";
@@ -13,10 +13,25 @@ export const AuthContextProvider: FC<PropsWithChildren> = ({ children }) => {
 
     const [login, { isLoading }] = useLoginMutation();
     const [logout] = useLogoutMutation();
+    const [refreshToken] = useRefreshTokenMutation();
+    const isAuthenticated = localStorage.getItem('isAuthenticated');
 
     useEffect(() => {
-        console.log(`Environment: ${process.env.NODE_ENV}`);
+        if (!user?.id && Boolean(isAuthenticated)) {
+            doRefreshToken();
+        }
     }, [])
+
+
+    const doRefreshToken = async () => {
+        try {
+            const user = await refreshToken({}).unwrap();
+            dispatch(addUser(user));
+        } catch (error: any) {
+            console.log(`Error trying to get refresh token - message: ${error.message} - stack: ${error.stack}`);
+            localStorage.removeItem('isAuthenticated');
+        }
+    }
 
     const doLogin = async (formData: ILoginFields) => {
         try {
