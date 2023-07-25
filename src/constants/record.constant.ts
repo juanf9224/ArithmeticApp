@@ -49,6 +49,12 @@ export const recordHeaders: IDynamicHeader[] = [
         sortDisabled: true,
     },
     {
+        id: 'deleted',
+        label: 'Deleted',
+        width: 50,
+        hidden: true,
+    },
+    {
         id: "createdAt",
         label: "Date",
         width: 100,

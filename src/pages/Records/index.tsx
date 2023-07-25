@@ -6,7 +6,7 @@ import LoanProButton from 'components/common/LoanProButton/LoanProButton';
 import { recordHeaders } from 'constants/record.constant';
 import { useGetRecordsQuery, useRemoveRecordMutation } from 'services/loan-pro-api/record/record.api';
 import { useDispatch } from 'react-redux';
-import { Sort } from 'components/table/DynamicTable/dynamicTable.types';
+import { IMeta, Sort } from 'components/table/DynamicTable/dynamicTable.types';
 import { addRecords, resetRecords } from 'store/features/record/recordSlice';
 import { useCalculateMutation } from 'services/loan-pro-api/operation/operation.api';
 import { OperationType } from 'constants/operation.constant';
@@ -19,16 +19,17 @@ const RecordsPage = () => {
     const [isOpen, setIsOpen] = useState(false);
     const [search, setSearch] = useState<string>('');
     const debouncedSearch = useDebounce(search, 500);
-    const [meta, setMeta] = useState({
+    const [meta, setMeta] = useState<IMeta>({
         page: 0,
         itemsPerPage: 5,
         orderBy: 'id',
         sortBy: Sort.DESC,
+        total: 0
     })
     const { user } = useContext(AuthContext);
     const dispatch = useDispatch()
     const { data, isFetching, refetch } = useGetRecordsQuery({
-        userId: user.id,
+        userId: user.id!,
         meta,
         search: debouncedSearch
     }, {
@@ -73,8 +74,14 @@ const RecordsPage = () => {
 
     const handleRemove = async (id: any) => {
         try {
+            const recordsCount = data?.results?.length;
             await removeRecord({ id }).unwrap();
-            await refetch();
+            if (recordsCount === 1 && meta.page > 0) {
+                setMeta({
+                    ...meta,
+                    page: meta.page - 1
+                })
+            }
         } catch (error: any) {
             console.error(`Error trying to delete record - message: ${error.message} - stack: ${error.stack}`);
         }
