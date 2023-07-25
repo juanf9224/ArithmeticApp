@@ -14,10 +14,10 @@ export const AuthContextProvider: FC<PropsWithChildren> = ({ children }) => {
     const [login, { isLoading }] = useLoginMutation();
     const [logout] = useLogoutMutation();
     const [refreshToken] = useRefreshTokenMutation();
-    const isAuthenticated = localStorage.getItem('isAuthenticated');
+    const isAuthenticatedInStorage = localStorage.getItem('isAuthenticated');
 
     useEffect(() => {
-        if (!user?.id && Boolean(isAuthenticated)) {
+        if (!user?.id && Boolean(isAuthenticatedInStorage)) {
             console.log('refresh happened');
             doRefreshToken();
         }
@@ -59,7 +59,20 @@ export const AuthContextProvider: FC<PropsWithChildren> = ({ children }) => {
     }
 
     return (
-        <AuthContext.Provider value={{ user, login: { doLogin, isLoading }, doLogout }}>
+        <AuthContext.Provider value={{
+            user: {
+                ...user,
+                auth: {
+                    isAuthenticated: user?.auth.isAuthenticated && Boolean(isAuthenticatedInStorage)
+                }
+            },
+            login:
+            {
+                doLogin,
+                isLoading
+            },
+            doLogout
+        }}>
             {children}
         </AuthContext.Provider>
     )

@@ -12,10 +12,12 @@ import { useCalculateMutation } from 'services/loan-pro-api/operation/operation.
 import { OperationType } from 'constants/operation.constant';
 import { useDebounce } from 'hooks/useDebounce';
 import { AuthContext } from 'context/authContext';
+import { useNavigate } from 'react-router-dom';
 
 const DynamicTable = lazy(() => import('components/table/DynamicTable/DynamicTable'));
 
 const RecordsPage = () => {
+    const { user } = useContext(AuthContext);
     const [isOpen, setIsOpen] = useState(false);
     const [search, setSearch] = useState<string>('');
     const debouncedSearch = useDebounce(search, 500);
@@ -26,8 +28,8 @@ const RecordsPage = () => {
         sortBy: Sort.DESC,
         total: 0
     })
-    const { user } = useContext(AuthContext);
     const dispatch = useDispatch()
+    const navigate = useNavigate();
     const { data, isFetching, refetch } = useGetRecordsQuery({
         userId: user.id!,
         meta,
@@ -38,6 +40,10 @@ const RecordsPage = () => {
     });
     const [calculate, { isLoading }] = useCalculateMutation();
     const [removeRecord] = useRemoveRecordMutation();
+
+    if (!user?.auth?.isAuthenticated) {
+        navigate('/login');
+    }
 
     useEffect(() => {
         if (!isFetching && data?.results?.length) {

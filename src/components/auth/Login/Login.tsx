@@ -28,6 +28,7 @@ const useStyles = makeStyles((theme: IExtendedTheme) => ({
   }
 }))
 const Login: FC = () => {
+  const {user} = useContext(AuthContext);
   const { login: { doLogin, isLoading } } = useContext(AuthContext);
   const { loginBtn, form, imageContainer } = useStyles();
   const [showPassword, setShowPassword] = useState<boolean>(false);
@@ -37,6 +38,10 @@ const Login: FC = () => {
   const watchUsername = watch('username', '');
   const watchPassword = watch('password', '');
   const navigate = useNavigate();
+
+  if (user?.auth?.isAuthenticated) {
+    navigate('/operations/records');
+  }
 
   const handleLogIn = async (formData: ILoginFields) => {
     try {
