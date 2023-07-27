@@ -12,6 +12,7 @@ export interface IMeta {
     sortBy: Sort;
     total: number;
     rowsDisplayedLabel?: string;
+    search?: string;
 }   
 
 export interface IDynamicTableProp {

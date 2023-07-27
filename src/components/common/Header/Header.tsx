@@ -1,19 +1,20 @@
-import React, { useContext, useState } from 'react';
+import React, { useState } from 'react';
 import { Grid, IconButton, ListItemText, Menu, MenuItem, Typography } from '@mui/material';
 import { loanPro } from 'assets';
 import MenuIcon from '@mui/icons-material/Menu';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import { useNavigate } from 'react-router-dom';
-import { AuthContext } from 'context/authContext';
+import { useAuth } from 'hooks/useAuth';
 
 const Header = () => {
-    const { user, doLogout } = useContext(AuthContext);
+    const { user, doLogout } = useAuth();
     const [anchorMenu, setAnchorMenu] = useState(null);
     const navigate = useNavigate();
 
     const handleLogOut = async () => {
-        await doLogout();
-        navigate('/login', { replace: true });
+        await doLogout(() => {
+            navigate('/login', { replace: true })
+        });
     }
 
     const handleOpenUserMenu = (event: any) => {
@@ -29,7 +30,7 @@ const Header = () => {
         }}>
             <img src={loanPro} alt="loan-pro" style={{ width: '25%', maxHeight: '100%' }} />
             <IconButton onClick={handleOpenUserMenu} disableFocusRipple disableRipple>
-                <Typography variant="body1" sx={{ color: 'black' }}>{user?.username || 'MENU'}</Typography>
+                <Typography variant="body1" sx={{ color: 'black' }}>{user?.username || ''}</Typography>
                 <MenuIcon sx={{ fontSize: 20, ml: 1 }} />
             </IconButton>
             <Menu

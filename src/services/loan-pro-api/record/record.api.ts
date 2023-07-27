@@ -12,7 +12,6 @@ interface PagedRecordResponse {
 interface PagedRecordsPayload {
   userId: number;
   meta: IMeta;
-  search: string;
 }
 
 const recordApi = loanProApi.injectEndpoints({
@@ -20,7 +19,7 @@ const recordApi = loanProApi.injectEndpoints({
       getRecords: build.query<PagedRecordResponse, PagedRecordsPayload>({
         query: (args): FetchArgs => {
           return {
-            url: `records/${args.userId}?page=${args?.meta?.page}&itemsPerPage=${args?.meta?.itemsPerPage}&orderBy=${args?.meta?.orderBy}&sortBy=${args?.meta?.sortBy}&search=${args?.search}`,
+            url: `records/${args.userId}?page=${args?.meta?.page}&itemsPerPage=${args?.meta?.itemsPerPage}&orderBy=${args?.meta?.orderBy}&sortBy=${args?.meta?.sortBy}&search=${args?.meta?.search}`,
           };
         },
         providesTags: (result, _error, _page) => 

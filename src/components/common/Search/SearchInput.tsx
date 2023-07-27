@@ -1,18 +1,21 @@
 import { Search } from "@mui/icons-material";
 import { Paper, InputBase, Divider, Button } from "@mui/material";
-import { FunctionComponent, useState, memo, ChangeEvent, KeyboardEvent } from "react";
+import { FunctionComponent, useState, memo, ChangeEvent, KeyboardEvent, useEffect } from "react";
+import { debounce } from "utils/search.utils";
 
 export type SearchInputProp = {
-    searchHandler: (term: string) => void;
+    onSearchChange: (term: string) => void;
     placeholder?: string;
 }
 
-export const SearchInput: FunctionComponent<SearchInputProp> = ({ searchHandler, placeholder = 'Search' }: SearchInputProp) => {
-    const [searchTerm, setSearchTerm] = useState<string>('');
+export const SearchInput: FunctionComponent<SearchInputProp> = ({ onSearchChange, placeholder = 'Search' }: SearchInputProp) => {
+    const [searchTerm, setSearchTerm] = useState<string>('');    
 
     const onInputChange = (value: string) => {
-        setSearchTerm(value);
-        searchHandler(value);
+        setSearchTerm(value);        
+        debounce(() => {         
+            onSearchChange(value);
+        }, 500);
     }
 
     const preventEnterKeyRefresh = (ev: KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -48,7 +51,7 @@ export const SearchInput: FunctionComponent<SearchInputProp> = ({ searchHandler,
                 type="button"
                 style={{ padding: 10 }}
                 aria-label="search"
-                onClick={() => searchHandler(searchTerm)}
+                onClick={() => onSearchChange(searchTerm)}
             >
                 <Search />  
             </Button>

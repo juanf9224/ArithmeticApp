@@ -1,5 +1,5 @@
-import React, { Suspense, lazy, useContext, useEffect, useState } from 'react'
-import { Grid, LinearProgress } from '@mui/material';
+import React, { Suspense, lazy, useEffect, useState } from 'react'
+import { Grid, LinearProgress, Typography } from '@mui/material';
 import OperationModal from 'components/OperationModal/OperationModal';
 import { SearchInput } from 'components/common/Search/SearchInput';
 import LoanProButton from 'components/common/LoanProButton/LoanProButton';
@@ -10,40 +10,32 @@ import { IMeta, Sort } from 'components/table/DynamicTable/dynamicTable.types';
 import { addRecords, resetRecords } from 'store/features/record/recordSlice';
 import { useCalculateMutation } from 'services/loan-pro-api/operation/operation.api';
 import { OperationType } from 'constants/operation.constant';
-import { useDebounce } from 'hooks/useDebounce';
-import { AuthContext } from 'context/authContext';
-import { useNavigate } from 'react-router-dom';
+import { useAuth } from 'hooks/useAuth';
+import { FindInPageRounded } from '@mui/icons-material';
 
 const DynamicTable = lazy(() => import('components/table/DynamicTable/DynamicTable'));
 
 const RecordsPage = () => {
-    const { user } = useContext(AuthContext);
+    const { user } = useAuth();
     const [isOpen, setIsOpen] = useState(false);
-    const [search, setSearch] = useState<string>('');
-    const debouncedSearch = useDebounce(search, 500);
     const [meta, setMeta] = useState<IMeta>({
         page: 0,
         itemsPerPage: 5,
         orderBy: 'id',
         sortBy: Sort.DESC,
-        total: 0
+        total: 0,
+        search: '',
     })
     const dispatch = useDispatch()
-    const navigate = useNavigate();
     const { data, isFetching, refetch } = useGetRecordsQuery({
         userId: user.id!,
-        meta,
-        search: debouncedSearch
+        meta
     }, {
         refetchOnReconnect: true,
         skip: !user?.id
     });
     const [calculate, { isLoading }] = useCalculateMutation();
     const [removeRecord] = useRemoveRecordMutation();
-
-    if (!user?.auth?.isAuthenticated) {
-        navigate('/login');
-    }
 
     useEffect(() => {
         if (!isFetching && data?.results?.length) {
@@ -93,6 +85,14 @@ const RecordsPage = () => {
         }
     }
 
+    const onSearchChange = (search: string) => {
+        setMeta({
+            ...meta,
+            page: 0,
+            search
+        });
+    };
+
     return (
         <Suspense fallback={<LinearProgress />}>
             <Grid container style={{
@@ -103,7 +103,7 @@ const RecordsPage = () => {
             ) : null}
             <Grid item xs={12} style={{ display: 'flex', padding: '20px 0', justifyContent: 'space-between' }}>
                 <Grid item xs={4}>
-                    <SearchInput searchHandler={(value) => setSearch(value)} placeholder="Search Record" />
+                    <SearchInput onSearchChange={onSearchChange} placeholder="Search Record" />
                 </Grid>
                 <Grid item xs={2} style={{ display: 'flex', justifyContent: 'flex-end', paddingRight: 10 }}>
                     <LoanProButton onClick={() => setIsOpen(true)}>
@@ -126,7 +126,7 @@ const RecordsPage = () => {
                         }}
                         handleRemove={handleRemove}
                     />
-                ) : null
+                ) : <div style={{ display: 'flex', alignItems: 'center'}}> <Typography>No data to display...</Typography> <FindInPageRounded color='info' fontSize="large" /></div>
             }
         </Grid>
         </Suspense>

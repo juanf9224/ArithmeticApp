@@ -1,9 +1,9 @@
 import { TableHead, TableRow, TableCell, TableSortLabel } from '@mui/material';
-import React from 'react';
+import React, { FC } from 'react';
 import { IDynamicHeader, Sort } from '../DynamicTable/dynamicTable.types';
 import { IEnhancedTableProp } from './enhancedTableHead.types';
 
-export const EnhancedTableHead = ({
+export const EnhancedTableHead: FC<IEnhancedTableProp> = ({
     meta,
     headers,
     sortHandler,
@@ -26,7 +26,7 @@ export const EnhancedTableHead = ({
                         headCell?.sortDisabled ? headCell.label : (
                             <TableSortLabel
                                 active={meta.orderBy === headCell.id}
-                                direction={meta.orderBy === headCell.id ? meta.orderBy : Sort.ASC}
+                                direction={meta.orderBy === headCell.id ? meta.sortBy : Sort.ASC}
                                 onClick={() => sortHandler(headCell.id)}
                             >
 

@@ -1,4 +1,4 @@
-import React, { FC, useEffect } from 'react';
+import React, { FC, memo } from 'react';
 import {
   TextField,
   Box,
@@ -171,4 +171,4 @@ const OperationModal: FC<IOperationModalProps> = ({ open, handleClose, handleAdd
   );
 };
 
-export default OperationModal;
+export default memo(OperationModal);

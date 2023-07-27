@@ -1,7 +1,7 @@
-import { IDynamicHeader } from "../DynamicTable/dynamicTable.types";
+import { IDynamicHeader, IMeta } from "../DynamicTable/dynamicTable.types";
 
 export interface IEnhancedTableProp {
-    meta: any,
+    meta: IMeta,
     headers: IDynamicHeader[];
     sortHandler: (property: string) => void;
     headClass?: any;

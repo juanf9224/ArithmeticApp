@@ -1,5 +1,5 @@
 import { ILoginFields } from "constants/user.constant";
-import { AuthContext } from "context/authContext";
+import { AuthContext, AuthContextType } from "context/authContext";
 import { FC, PropsWithChildren, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useLoginMutation, useLogoutMutation, useRefreshTokenMutation } from "services/loan-pro-api/auth/auth";
@@ -13,12 +13,11 @@ export const AuthContextProvider: FC<PropsWithChildren> = ({ children }) => {
 
     const [login, { isLoading }] = useLoginMutation();
     const [logout] = useLogoutMutation();
-    const [refreshToken] = useRefreshTokenMutation();
-    const isAuthenticatedInStorage = localStorage.getItem('isAuthenticated');
+    const [refreshToken, { isLoading: isRefreshLoading }] = useRefreshTokenMutation();
+    const isAuthenticatedInStorage = Boolean(localStorage.getItem('isAuthenticated'));
 
     useEffect(() => {
         if (!user?.id && Boolean(isAuthenticatedInStorage)) {
-            console.log('refresh happened');
             doRefreshToken();
         }
     }, [])
@@ -34,11 +33,12 @@ export const AuthContextProvider: FC<PropsWithChildren> = ({ children }) => {
         }
     }
 
-    const doLogin = async (formData: ILoginFields) => {
+    const doLogin = async (formData: ILoginFields, callback: VoidFunction) => {
         try {
         const response = await login(formData).unwrap();
         dispatch(addUser(response));
         localStorage.setItem('isAuthenticated', 'true');
+        callback();
         } catch (error: any) {
         console.error(
             `Could not login - message: ${error.message} - stack: ${error.stack}`
@@ -46,33 +46,36 @@ export const AuthContextProvider: FC<PropsWithChildren> = ({ children }) => {
         }
     };  
 
-    const doLogout = async () => {
+    const doLogout = async (callback: VoidFunction) => {
         try {
             await logout(user.id).unwrap();
             dispatch(resetRecords());
             dispatch(resetOperations());
             localStorage.removeItem('isAuthenticated');
             dispatch(logOut());
+            callback();
         } catch (error: any) {
             console.log(`Error trying to logout - message: ${error.message} - stack: ${error.stack}`);
         }
     }
 
+    let value: AuthContextType = {
+        user: {
+            ...user,
+            auth: {
+                isAuthenticated: user?.auth.isAuthenticated && isAuthenticatedInStorage,
+            }
+        },
+        login:
+        {
+            doLogin,
+            isLoading,
+            isRefreshLoading
+        },
+        doLogout
+    };
     return (
-        <AuthContext.Provider value={{
-            user: {
-                ...user,
-                auth: {
-                    isAuthenticated: user?.auth.isAuthenticated && Boolean(isAuthenticatedInStorage)
-                }
-            },
-            login:
-            {
-                doLogin,
-                isLoading
-            },
-            doLogout
-        }}>
+        <AuthContext.Provider value={value}>
             {children}
         </AuthContext.Provider>
     )

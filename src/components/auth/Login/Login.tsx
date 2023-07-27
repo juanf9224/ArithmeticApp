@@ -1,15 +1,15 @@
-import React, { FC, useContext, useState } from 'react';
-import { Button, CircularProgress, FormControl, InputAdornment, TextField, Tooltip, Typography } from '@mui/material';
+import React, { FC, useState } from 'react';
+import { Button, CircularProgress, FormControl, InputAdornment, LinearProgress, TextField, Tooltip, Typography } from '@mui/material';
 import { useForm } from 'react-hook-form';
 import { emailPatternValidator, emailValidationErrorText, emailValidator } from 'utils/formValidator';
 import { loanPro } from 'assets';
 import { Clear, Lock, Mail, Visibility, VisibilityOff } from '@mui/icons-material';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import CentralizedContainer from 'components/common/CentralizedContainer/CentralizedContainer';
 import { makeStyles } from '@mui/styles';
 import { ILoginFields } from 'constants/user.constant';
-import { AuthContext } from 'context/authContext';
 import { IExtendedTheme } from 'theme/ExtendedThemeOptions';
+import { useAuth } from 'hooks/useAuth';
 
 const useStyles = makeStyles((theme: IExtendedTheme) => ({
   form: {
@@ -28,8 +28,7 @@ const useStyles = makeStyles((theme: IExtendedTheme) => ({
   }
 }))
 const Login: FC = () => {
-  const {user} = useContext(AuthContext);
-  const { login: { doLogin, isLoading } } = useContext(AuthContext);
+  const { login: { doLogin, isLoading, isRefreshLoading } } = useAuth();
   const { loginBtn, form, imageContainer } = useStyles();
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const { handleSubmit, setValue, register, formState: { errors }, watch } = useForm<ILoginFields>({
@@ -38,15 +37,14 @@ const Login: FC = () => {
   const watchUsername = watch('username', '');
   const watchPassword = watch('password', '');
   const navigate = useNavigate();
-
-  if (user?.auth?.isAuthenticated) {
-    navigate('/operations/records');
-  }
+  const { state } = useLocation();
 
   const handleLogIn = async (formData: ILoginFields) => {
     try {
-      await doLogin(formData);
-      navigate('/operation/records', { replace: true });
+      await doLogin(
+        formData,
+        () => navigate(state?.path || '/operation/records', { replace: true })
+      );
     } catch (error: any) {
       console.error(
         `Could not login - message: ${error.message} - stack: ${error.stack}`,
@@ -54,7 +52,9 @@ const Login: FC = () => {
     }
   };
 
-  return (
+  return isRefreshLoading ? (
+    <LinearProgress />
+  ) : (
     <CentralizedContainer>
           <div className={imageContainer}>
             <img src={loanPro} alt="true-north-and-loan-pro" style={{ width: '30%' }} loading='lazy' />
